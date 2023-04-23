@@ -2,30 +2,54 @@ from bank_account import BankAccount
 from atm import ATM
 from transaction import Bank
 
-
 if __name__ == "__main__":
-    # Create bank accounts
-    account1 = BankAccount("123456", 1000)
-    account2 = BankAccount("789012", 500)
+    atm = ATM()
+    account1 = BankAccount("Dheeraj", 1000)
+    account2 = BankAccount("Nikith", 1500)
+    atm.add_account(account1)
+    atm.add_account(account2)
 
-    # Create bank and ATM
-    bank = Bank([account1, account2])
-    atm = ATM(bank)
-
-    # Use ATM
-    account_number = input("Please enter your Account Number:")
-    if account_number == 123456 or 789012:
-        pin = int(input("Please enter you pin number:"))
-        if pin == 1234:
-            account_number = "123456"
-            atm.insert_card(account_number, pin)
-            atm.select_account(account_number)
-            print(atm.check_balance())  # Returns 1000
-            atm.deposit(500)
-            print(atm.check_balance())  # Returns 1500
-            print(atm.withdraw(200))  # Returns 200
-            print(atm.check_balance())  # Returns 1300
+    # Using ATM Stimulator
+    while True:
+        print("Welcome to ATM Stimulator")
+        print("1. Make a Deposit")
+        print("2. Withdraw Money")
+        print("3. Check balance")
+        print("4. Print transactions")
+        print("5. Add account")
+        print("6. Remove account")
+        print("7. Exit")
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            name = input("Enter account name: ")
+            amount = int(input("Enter amount: "))
+            atm.deposit(name, amount)
+            transaction = Bank(name, amount, "deposited")
+            print(f"Transaction logged: {transaction}")
+        elif choice == "2":
+            name = input("Enter account name: ")
+            amount = int(input("Enter amount: "))
+            atm.withdraw(name, amount)
+            transaction = Bank(name, amount, "withdrawn")
+            print(f"Transaction logged: {transaction}")
+        elif choice == "3":
+            name = input("Enter account name: ")
+            balance = atm.check_balance(name)
+            if balance:
+                print(f"Balance for account {name}: {balance}")
+        elif choice == "4":
+            atm.print_transactions()
+        elif choice == "5":
+            name = input("Enter account name: ")
+            balance = int(input("Enter account balance: "))
+            account = BankAccount(name, balance)
+            atm.add_account(account)
+            print(f"Account {name} added successfully")
+        elif choice == "6":
+            name = input("Enter account name: ")
+            atm.remove_account(name)
+            print(f"Account {name} removed successfully")
+        elif choice == "7":
+            break
         else:
-            print("Incorrect pin number")
-    else:
-        print("Invalid Account Number")
+            print("Invalid choice. Please try again.")

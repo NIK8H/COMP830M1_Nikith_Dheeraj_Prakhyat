@@ -2,8 +2,8 @@ import datetime
 
 
 class BankAccount:
-    def __init__(self, account_number, balance):
-        self.account_number = account_number
+    def __init__(self, name, balance):
+        self.name = name
         self.balance = balance
         self.transactions = []
 
