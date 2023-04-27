@@ -1,9 +1,12 @@
-from bank_account import BankAccount
+from datetime import datetime
 
 
 class Bank:
-    def __init__(self, accounts):
-        self.accounts = accounts
+    def __init__(self, name, amount, transaction_type):
+        self.name = name
+        self.amount = amount
+        self.transaction_type = transaction_type
+        self.timestamp = datetime.now()
 
     def validate_card(self, card_number, pin):
         # Code to validate card number and pin
