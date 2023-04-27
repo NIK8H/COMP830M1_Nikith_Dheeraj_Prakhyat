@@ -1,27 +1,48 @@
+from bank_account import BankAccount
+from transaction import Bank
+
+
 class ATM:
-    def __init__(self, bank):
-        self.bank = bank
+    def __init__(self):
+        self.accounts = {}
+        self.transactions = []
 
-    def insert_card(self, card_number, pin):
-        self.card_number = card_number
-        self.pin = pin
-        if self.bank.validate_card(self.card_number, self.pin):
-            return True
+    def add_account(self, account):
+        self.accounts[account.name] = account
+
+    def remove_account(self, name):
+        del self.accounts[name]
+
+    def get_account(self, name):
+        return self.accounts[name]
+
+    def deposit(self, name, amount):
+        account = self.get_account(name)
+        if account:
+            account.deposit(amount)
+            transaction = Bank(name, amount, "deposited")
+            self.transactions.append(transaction)
         else:
-            return False
+            print("Account not found")
 
-    def select_account(self, account_number):
-        if self.bank.validate_account(self.card_number, account_number):
-            self.account_number = account_number
-            return True
+    def withdraw(self, name, amount):
+        account = self.get_account(name)
+        if account:
+            if account.withdraw(amount):
+                transaction = Bank(name, amount, "withdrawn")
+                self.transactions.append(transaction)
+            else:
+                print("Insufficient balance")
         else:
-            return False
+            print("Account not found")
 
-    def check_balance(self):
-        return self.bank.get_balance(self.account_number)
+    def check_balance(self, name):
+        account = self.get_account(name)
+        if account:
+            return account.check_balance()
+        else:
+            print("Account not found")
 
-    def deposit(self, amount):
-        return self.bank.deposit(self.account_number, amount)
-
-    def withdraw(self, amount):
-        return self.bank.withdraw(self.account_number, amount)
+    def print_transactions(self):
+        for transaction in self.transactions:
+            print(transaction)
