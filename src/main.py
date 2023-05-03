@@ -42,7 +42,9 @@ for account_name, account_data in accounts_data.items():
 
 # ATM menu
 while True:
-    print("Welcome to the ATM!")
+    print("******************************")
+    print("Welcome to the ATM Stimulator!")
+    print("******************************")
     print("Please select an option:")
     print("1. Create Account")
     print("2. Remove Account")
@@ -55,18 +57,30 @@ while True:
     choice = input("> ")
 
     if choice == "1":
-        name = input("Enter account name: ")
-        balance = float(input("Enter starting balance: "))
-        pin = input("Enter PIN: ")
-        account = Account(name, pin, balance)
-        atm.add_account(account)
-        print(f"Account created: {account}")
-        save_accounts(atm.get_accounts())
+        check = int(input("Enter the Admin Password:"))
+        if check == 123456:
+            name = input("Enter account name: ")
+            balance = float(input("Enter starting balance: "))
+            pin = int(input("Create a 4 digit PIN: "))
+            pin1 = int(input("Confirm PIN again:"))
+            if pin == pin1:
+                account = Account(name, pin, balance)
+                atm.add_account(account)
+                print(f"Account created: {account}")
+                save_accounts(atm.get_accounts())
+            else:
+                print("PIN not matched try again")
+        else:
+            print("Incorrect Admin Password, Try Again")
     elif choice == "2":
-        name = input("Enter account name: ")
-        atm.remove_account(name)
-        print(f"Account removed: {name}")
-        save_accounts(atm.get_accounts())
+        check = int(input("Enter the Admin Password:"))
+        if check == 123456:
+            name = input("Enter account name: ")
+            atm.remove_account(name)
+            print(f"Account removed: {name}")
+            save_accounts(atm.get_accounts())
+        else:
+            print("Incorrect Admin Password, Try Again")
     elif choice == "3":
         name = input("Enter account name: ")
         pin = int(input("Enter PIN: "))
@@ -100,7 +114,7 @@ while True:
     elif choice == "6":
         atm.print_transactions()
     elif choice == "7":
-        print("Goodbye!")
+        print("Thanks for using ATM Stimulator!")
         break
     else:
         print("Invalid choice. Please try again.")
