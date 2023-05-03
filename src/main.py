@@ -1,4 +1,4 @@
-from bank_account import BankAccount
+from account import BankAccount
 from atm import ATM
 from transaction import Bank
 
