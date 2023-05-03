@@ -43,6 +43,7 @@ class ATM:
         if account.balance < amount:
             return "Insufficient balance"
         if account.withdraw(amount, pin):
+            account.balance -= amount
             transaction = Transaction(name, -amount, "withdrawn")
             self.transactions.append(transaction)
             self.save_accounts()
@@ -60,7 +61,7 @@ class ATM:
     def print_transactions(self):
         for transaction in self.transactions:
             print(f"{transaction.account_name}: {transaction.amount} "
-                  f"({transaction.transaction_type})")
+                  f"({transaction.transaction_type}) on {transaction.timestamp}")
 
     def save_accounts(self):
         with open("database.csv", mode="w", newline="") as file:
