@@ -1,55 +1,106 @@
-from account import BankAccount
+import os
+import csv
 from atm import ATM
-from transaction import Bank
+from account import Account
 
-if __name__ == "__main__":
-    atm = ATM()
-    account1 = BankAccount("Dheeraj", 1000)
-    account2 = BankAccount("Nikith", 1500)
-    atm.add_account(account1)
-    atm.add_account(account2)
 
-    # Using ATM Stimulator
-    while True:
-        print("Welcome to ATM Stimulator")
-        print("1. Make a Deposit")
-        print("2. Withdraw Money")
-        print("3. Check balance")
-        print("4. Print transactions")
-        print("5. Add account")
-        print("6. Remove account")
-        print("7. Exit")
-        choice = input("Enter your choice: ")
-        if choice == "1":
-            name = input("Enter account name: ")
-            amount = int(input("Enter amount: "))
-            atm.deposit(name, amount)
-            transaction = Bank(name, amount, "deposited")
-            print(f"Transaction logged: {transaction}")
-        elif choice == "2":
-            name = input("Enter account name: ")
-            amount = int(input("Enter amount: "))
-            atm.withdraw(name, amount)
-            transaction = Bank(name, amount, "withdrawn")
-            print(f"Transaction logged: {transaction}")
-        elif choice == "3":
-            name = input("Enter account name: ")
-            balance = atm.check_balance(name)
-            if balance:
-                print(f"Balance for account {name}: {balance}")
-        elif choice == "4":
-            atm.print_transactions()
-        elif choice == "5":
-            name = input("Enter account name: ")
-            balance = int(input("Enter account balance: "))
-            account = BankAccount(name, balance)
-            atm.add_account(account)
-            print(f"Account {name} added successfully")
-        elif choice == "6":
-            name = input("Enter account name: ")
-            atm.remove_account(name)
-            print(f"Account {name} removed successfully")
-        elif choice == "7":
-            break
+# Load accounts from database.csv
+def load_accounts():
+    accounts = {}
+    with open("database.csv", "r") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            name = row["name"]
+            pin = int(row["pin"])
+            balance = float(row["balance"])
+            account = Account(name, pin, balance)
+            accounts[name] = account
+    return accounts
+
+
+# Save accounts to database.csv
+def save_accounts(accounts):
+    with open("database.csv", mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for account in accounts:
+            name = account.name
+            balance = account.balance
+            pin = account.pin
+            writer.writerow([name, pin, balance])
+
+
+# Create ATM instance
+atm = ATM()
+
+# Load accounts from database.csv
+accounts_data = load_accounts()
+
+# Create Account instances for each account in accounts_data
+for account_name, account_data in accounts_data.items():
+    account = Account(account_name, account_data.pin, account_data.balance)
+    atm.add_account(account)
+
+# ATM menu
+while True:
+    print("Welcome to the ATM!")
+    print("Please select an option:")
+    print("1. Create Account")
+    print("2. Remove Account")
+    print("3. Deposit")
+    print("4. Withdraw")
+    print("5. Check Balance")
+    print("6. Print Transactions")
+    print("7. Exit")
+
+    choice = input("> ")
+
+    if choice == "1":
+        name = input("Enter account name: ")
+        balance = float(input("Enter starting balance: "))
+        pin = input("Enter PIN: ")
+        account = Account(name, pin, balance)
+        atm.add_account(account)
+        print(f"Account created: {account}")
+        save_accounts(atm.get_accounts())
+    elif choice == "2":
+        name = input("Enter account name: ")
+        atm.remove_account(name)
+        print(f"Account removed: {name}")
+        save_accounts(atm.get_accounts())
+    elif choice == "3":
+        name = input("Enter account name: ")
+        pin = int(input("Enter PIN: "))
+        if atm.check_pin(name, pin):
+            amount = float(input("Enter amount to deposit: "))
+            atm.deposit(name, pin, amount)
+            print(f"Deposit successful. New balance: "
+                  f"{atm.check_balance(name, pin)}")
+            save_accounts(atm.get_accounts())
         else:
-            print("Invalid choice. Please try again.")
+            print("Incorrect PIN")
+    elif choice == "4":
+        name = input("Enter account name: ")
+        pin = input("Enter PIN: ")
+        if atm.check_pin(name, pin):
+            amount = float(input("Enter amount to withdraw: "))
+            atm.withdraw(name, pin, amount)
+            print(f"Withdrawal successful. New balance: "
+                  f"{atm.check_balance(name, pin)}")
+            save_accounts(atm.get_accounts())
+        else:
+            print("Incorrect PIN")
+    elif choice == "5":
+        name = input("Enter account name: ")
+        pin = input("Enter PIN: ")
+        if atm.check_pin(name, pin):
+            balance = atm.check_balance(name, pin)
+            print(f"Current balance: {balance}")
+        else:
+            print("Incorrect PIN")
+    elif choice == "6":
+        atm.print_transactions()
+    elif choice == "7":
+        print("Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please try again.")
