@@ -2,6 +2,7 @@ from transaction import Transaction
 
 
 class Account:
+    """Code for Account module."""
     def __init__(self, name, pin, balance):
         self.name = name
         self.pin = int(pin)
