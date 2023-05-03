@@ -1,37 +1,12 @@
 from datetime import datetime
 
-
-class Bank:
-    def __init__(self, name, amount, transaction_type):
-        self.name = name
-        self.amount = amount
+class Transaction:
+    def __init__(self, account_name, amount, transaction_type):
+        self.account_name = account_name
+        self.amount = float(amount)
         self.transaction_type = transaction_type
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    def validate_card(self, card_number, pin):
-        # Code to validate card number and pin
-        return True
-
-    def validate_account(self, card_number, account_number):
-        # Code to validate account number against card number
-        return True
-
-    def get_balance(self, account_number):
-        account = self.get_account(account_number)
-        return account.check_balance()
-
-    def deposit(self, account_number, amount):
-        account = self.get_account(account_number)
-        account.deposit(amount)
-        return account.check_balance()
-
-    def withdraw(self, account_number, amount):
-        account = self.get_account(account_number)
-        return account.withdraw(amount)
-
-    def get_account(self, account_number):
-        for account in self.accounts:
-            if account.account_number == account_number:
-                return account
-        return None
-
+    def __str__(self):
+        return f"{self.timestamp} - {self.account_name} - " \
+               f"{self.transaction_type} - {self.amount}"
