@@ -1,4 +1,3 @@
-import os
 import csv
 from atm import ATM
 from account import Account
