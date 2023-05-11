@@ -38,18 +38,16 @@ class ATM:
         account = self.get_account(name)
         if not account:
             return "Account not found"
-        if not account.check_pin(pin):
+        elif not account.check_pin(pin):
             return "Invalid PIN"
-        if account.balance < amount:
-            return "Insufficient balance"
-        if account.withdraw(amount, pin):
+        elif account.withdraw(amount, pin):
             account.balance -= amount
             transaction = Transaction(name, -amount, "withdrawn")
             self.transactions.append(transaction)
             self.save_accounts()
             return "Transaction successful"
         else:
-            return "Check"
+            return "Insufficient balance"
 
     def check_balance(self, name, pin):
         account = self.get_account(name)
